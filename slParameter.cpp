@@ -13,6 +13,9 @@ slParameter::slParameter (String uid_, String name_, String shortName_, String l
     label (label_),
     textFunction (textFunction_)
 {
+    if (shortName.isEmpty())
+        shortName = name;
+    
     range = NormalisableRange<float> (minValue, maxValue, intervalValue, skewFactor);
 }
 

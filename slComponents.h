@@ -13,6 +13,8 @@ public:
       : parameter (parameter_)
     {
         setButtonText (parameter->getUserValueText());
+        setToggleState (parameter->getUserValue() > 0.0f, dontSendNotification);
+        
         parameter->addListener (this);
     }
     
