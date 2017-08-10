@@ -20,6 +20,8 @@ public:
     //==============================================================================
     void addPluginParameter (slParameter* parameter);
     slParameter* getParameter (const String& uid);
+    float parameterValue (const String& uid);
+    int parameterIntValue (const String& uid);
     Array<slParameter*> getPluginParameters();
     
     File getProgramDirectory();

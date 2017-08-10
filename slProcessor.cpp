@@ -8,9 +8,6 @@
   ==============================================================================
 */
 
-
-#define MOXIE_PLUGIN 1
-
 #include "slProgram.h"
 #include "slProcessor.h"
 
@@ -44,7 +41,25 @@ slParameter* slProcessor::getParameter (const String& uid)
 {
     if (parameterMap.find (uid) != parameterMap.end())
         return parameterMap[uid];
+    
     return nullptr;
+}
+
+float slProcessor::parameterValue (const String& uid)
+{
+    if (parameterMap.find (uid) != parameterMap.end())
+        return parameterMap[uid]->getUserValue();
+    
+    return 0;
+    
+}
+
+int slProcessor::parameterIntValue (const String& uid)
+{
+    if (parameterMap.find (uid) != parameterMap.end())
+        return int (parameterMap[uid]->getUserValue());
+    
+    return 0;
 }
 
 Array<slParameter*> slProcessor::getPluginParameters()
