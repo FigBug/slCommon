@@ -65,6 +65,7 @@ void slAudioProcessorEditor::refreshPrograms()
         programs.addItem (processor.getProgramName (i), i + 1);
     
     programs.setSelectedItemIndex (slProc.getCurrentProgram(), dontSendNotification);
+    deleteButton.setEnabled (slProc.getCurrentProgram() != 0);
 }
 
 void slAudioProcessorEditor::buttonClicked (Button* b)

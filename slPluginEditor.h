@@ -25,6 +25,7 @@ protected:
     Rectangle<int> getGridArea (int x, int y, int w = 1, int h = 1);
     void setGridSize (int x, int y);
     
+    slProcessor& slProc;
     const int cx;
     const int cy;
     
@@ -36,7 +37,6 @@ protected:
     ParamComponent* componentForId (const String& uid);
     
     slLookAndFeel lf;
-    slProcessor& slProc;
     
     ComboBox programs;
     TextButton addButton {"A"};
