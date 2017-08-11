@@ -31,9 +31,9 @@ public:
     void endUserAction();
 
     //==============================================================================
-    NormalisableRange<float> getUserRange() { return range;         }
-    float getUserRangeStart()               { return range.start;   }
-    float getUserRangeEnd()                 { return range.end;     }
+    NormalisableRange<float> getUserRange() const { return range;         }
+    float getUserRangeStart() const               { return range.start;   }
+    float getUserRangeEnd() const                 { return range.end;     }
     
     //==============================================================================
     class Listener
