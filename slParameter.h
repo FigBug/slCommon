@@ -10,7 +10,7 @@ class slParameter : public AudioProcessorParameter,
 public:
     slParameter (String uid, String name, String shortName, String label, float minValue, float maxValue,
                  float intervalValue, float defaultValue, float skewFactor = 1.0f,
-                 std::function<String (const slParameter&)> textFunction = nullptr);
+                 std::function<String (const slParameter&, float)> textFunction = nullptr);
     
     String getUid() { return uid; }
 
@@ -21,6 +21,7 @@ public:
     void setUserValueNotifingHost(float f);
     void setUserValueAsUserAction(float f);
     String getUserValueText() const;
+    String userValueToText (float val);
     
     bool isOnOff();
     
@@ -32,7 +33,7 @@ public:
     //==============================================================================
     NormalisableRange<float> getUserRange() { return range;         }
     float getUserRangeStart()               { return range.start;   }
-    float getUseRangeEnd()                  { return range.end;     }
+    float getUserRangeEnd()                 { return range.end;     }
     
     //==============================================================================
     class Listener
@@ -91,7 +92,7 @@ protected:
     String shortName;
     String label;
     
-    std::function<String (const slParameter&)> textFunction;
+    std::function<String (const slParameter&, float)> textFunction;
     
     int userActionCount {0};
     

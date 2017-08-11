@@ -3,7 +3,7 @@
 
 slParameter::slParameter (String uid_, String name_, String shortName_, String label_, float minValue, float maxValue,
                           float intervalValue, float defaultValue_, float skewFactor_,
-                          std::function<String (const slParameter&)> textFunction_)
+                          std::function<String (const slParameter&, float)> textFunction_)
   : value (defaultValue_),
     defaultValue (defaultValue_),
     skewFactor (skewFactor_),
@@ -67,8 +67,15 @@ void slParameter::setUserValueAsUserAction (float f)
 String slParameter::getUserValueText() const
 {
     if (textFunction)
-        return textFunction (*this);
+        return textFunction (*this, getUserValue());
     return getText (getValue(), 1000);
+}
+
+String slParameter::userValueToText (float val)
+{
+    if (textFunction)
+        return textFunction (*this, val);
+    return getText (val, 1000);
 }
 
 void slParameter::beginUserAction()

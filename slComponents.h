@@ -40,6 +40,43 @@ public:
     slParameter* parameter;
 };
 //==============================================================================
+class PluginComboBox : public ComboBox,
+                       private slParameter::Listener,
+                       private ComboBox::Listener
+{
+public:
+    PluginComboBox (slParameter* parameter_)
+      : parameter (parameter_)
+    {
+        for (int i = 0; i <= parameter->getUserRangeEnd(); i++)
+            addItem (parameter->userValueToText (i), i + 1);
+        
+        setSelectedItemIndex (parameter->getUserValue(), dontSendNotification);
+        
+        parameter->addListener (this);
+        addListener (this);
+    }
+    
+    ~PluginComboBox()
+    {
+        parameter->removeListener (this);
+    }
+    
+    void parameterChanged (slParameter*) override
+    {
+        setSelectedItemIndex (parameter->getUserValue(), dontSendNotification);
+    }
+    
+    void comboBoxChanged (ComboBox*) override
+    {
+        parameter->beginUserAction();
+        parameter->setUserValue (getSelectedItemIndex());
+        parameter->endUserAction();
+    }
+    
+    slParameter* parameter;
+};
+//==============================================================================
 class PluginSlider : public Slider,
                      private Slider::Listener,
                      private slParameter::Listener
@@ -49,7 +86,7 @@ public:
       : Slider (style, textBoxPosition), parameter (parameter_)
     {
         addListener (this);
-        setRange (parameter->getUserRangeStart(), parameter->getUseRangeEnd());
+        setRange (parameter->getUserRangeStart(), parameter->getUserRangeEnd());
         setValue (parameter->getUserValue(), juce::dontSendNotification);
         
         parameter->addListener (this);
@@ -155,4 +192,16 @@ private:
     
     Label name;
     PluginButton button;
+};
+//==============================================================================
+class Select : public ParamComponent
+{
+public:
+    Select (slParameter* parameter);
+    
+private:
+    void resized() override;
+    
+    Label name;
+    PluginComboBox comboBox;
 };

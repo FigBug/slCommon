@@ -80,3 +80,23 @@ void Switch::resized()
     button.setBounds (r);
     name.setBounds (r.translated (0, -20));
 }
+
+//==============================================================================
+Select::Select (slParameter* parameter)
+  : ParamComponent(parameter),
+    comboBox (parameter)
+{
+    addAndMakeVisible (&name);
+    addAndMakeVisible (&comboBox);
+
+    name.setText (parameter->getShortName(), dontSendNotification);
+    name.setJustificationType (Justification::centred);
+}
+
+void Select::resized()
+{
+    Rectangle<int> r = getLocalBounds().withSizeKeepingCentre (getWidth() - 10, 20);
+    
+    comboBox.setBounds (r);
+    name.setBounds (r.translated (0, -20));
+}

@@ -3,7 +3,7 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 
 //==============================================================================
-class slLookAndFeel : public LookAndFeel_V3
+class slLookAndFeel : public LookAndFeel_V4
 {
 public:
     slLookAndFeel();
@@ -16,5 +16,11 @@ public:
                                bool isMouseOverButton, bool isButtonDown) override;
     
     void drawButtonText (Graphics&, TextButton&, bool isMouseOverButton, bool isButtonDown) override;
+
+    void drawComboBox (Graphics&, int width, int height, bool isButtonDown,
+                       int buttonX, int buttonY, int buttonW, int buttonH,
+                       ComboBox&) override;
+
+    void positionComboBoxText (ComboBox&, Label&) override;
 
 };

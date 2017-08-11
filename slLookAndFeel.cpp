@@ -12,6 +12,9 @@ slLookAndFeel::slLookAndFeel()
     setColour (TextButton::textColourOffId, Colours::white);
     setColour (TextButton::textColourOnId, Colours::black);
     
+    setColour (ComboBox::backgroundColourId, Colours::transparentWhite);
+    setColour (ComboBox::outlineColourId, Colours::white);
+    
     Desktop::getInstance().getDefaultLookAndFeel().setDefaultSansSerifTypefaceName ("Geneva");
 }
 
@@ -83,3 +86,24 @@ void slLookAndFeel::drawButtonText (Graphics& g, TextButton& b, bool, bool)
     g.setColour (b.findColour (b.getToggleState() ? TextButton::textColourOnId : TextButton::textColourOffId));
     g.drawText (b.getButtonText(), b.getLocalBounds(), Justification::centred);
 }
+
+void slLookAndFeel::drawComboBox (Graphics& g, int width, int height, bool isButtonDown,
+                                  int buttonX, int buttonY, int buttonW, int buttonH,
+                                  ComboBox& box)
+{
+    const Rectangle<int> boxBounds (0, 0, width, height);
+    
+    g.setColour (box.findColour (ComboBox::backgroundColourId));
+    g.fillRect (boxBounds.toFloat());
+    
+    g.setColour (box.findColour (ComboBox::outlineColourId));
+    g.drawRect (boxBounds.toFloat().reduced (0.5f, 0.5f), 1.0f);
+}
+
+void slLookAndFeel::positionComboBoxText (ComboBox& box, Label& label)
+{
+    label.setBounds (1, 1, box.getWidth() - 1, box.getHeight() - 1);
+    label.setFont (getComboBoxFont (box));
+    label.setJustificationType (Justification::centred);
+}
+
