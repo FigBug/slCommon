@@ -7,7 +7,9 @@
 #include "slLookAndFeel.h"
 
 //==============================================================================
-class slAudioProcessorEditor : public AudioProcessorEditor
+class slAudioProcessorEditor : public AudioProcessorEditor,
+                               protected Button::Listener,
+                               protected ComboBox::Listener
 {
 public:
     slAudioProcessorEditor (slProcessor&, int cx = 100, int cy = 100) noexcept;
@@ -17,6 +19,8 @@ protected:
     
     void paint (Graphics& g) override;
     void resized() override;
+    void buttonClicked (Button* b) override;
+    void comboBoxChanged (ComboBox* c) override;
     
     Rectangle<int> getGridArea (int x, int y, int w = 1, int h = 1);
     void setGridSize (int x, int y);
@@ -24,7 +28,7 @@ protected:
     const int cx;
     const int cy;
     
-    int headerHeight = 50;
+    int headerHeight = 60;
     int inset = 4;
     
     OwnedArray<ParamComponent> controls;
@@ -32,4 +36,11 @@ protected:
     ParamComponent* componentForId (const String& uid);
     
     slLookAndFeel lf;
+    slProcessor& slProc;
+    
+    ComboBox programs;
+    TextButton addButton {"A"};
+    TextButton deleteButton {"D"};
+    
+    void refreshPrograms();
 };

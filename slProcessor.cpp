@@ -245,19 +245,19 @@ void slProcessor::getStateInformation (MemoryBlock& destData)
     }
     
     MemoryOutputStream os (destData, true);
-    rootE->writeToStream(os, String::empty);
+    rootE->writeToStream (os, String::empty);
 }
 
 void slProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
-    XmlDocument doc(String((const char*)data, sizeInBytes));
+    XmlDocument doc (String ((const char*)data, sizeInBytes));
     ScopedPointer<XmlElement> rootE (doc.getDocumentElement());
     if (rootE)
     {
         if (rootE->hasAttribute("valueTree"))
         {
-            String xml = rootE->getStringAttribute("valueTree");
-            XmlDocument treeDoc(xml);
+            String xml = rootE->getStringAttribute ("valueTree");
+            XmlDocument treeDoc (xml);
             if (ScopedPointer<XmlElement> vtE = treeDoc.getDocumentElement())
                 state = ValueTree::fromXml (*vtE.get());
         }
@@ -270,9 +270,9 @@ void slProcessor::setStateInformation (const void* data, int sizeInBytes)
             String uid = paramE->getStringAttribute ("uid");
             float  val = paramE->getStringAttribute ("val").getFloatValue();
             
-            if (slParameter* p = getParameter(uid))
+            if (slParameter* p = getParameter (uid))
             {
-                if (!p->isMetaParameter())
+                if (! p->isMetaParameter())
                     p->setUserValue (val);
             }
             

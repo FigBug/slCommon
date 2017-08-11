@@ -32,7 +32,7 @@ public:
     void clicked() override
     {
         parameter->beginUserAction();
-        parameter->setUserValue (parameter->getUserValue() > 0.0f ? 0.0f : 1.0f);
+        parameter->setUserValueNotifingHost (parameter->getUserValue() > 0.0f ? 0.0f : 1.0f);
         parameter->endUserAction();
         setButtonText (parameter->getUserValueText());
     }
@@ -70,7 +70,7 @@ public:
     void comboBoxChanged (ComboBox*) override
     {
         parameter->beginUserAction();
-        parameter->setUserValue (getSelectedItemIndex());
+        parameter->setUserValueNotifingHost (getSelectedItemIndex());
         parameter->endUserAction();
     }
     
@@ -121,7 +121,7 @@ public:
     void mouseDown (const MouseEvent& e) override
     {
         if (e.mods.isAltDown())
-            parameter->setUserValue (parameter->getUserDefaultValue());
+            parameter->setUserValueNotifingHost (parameter->getUserDefaultValue());
         else if (e.mods.isLeftButtonDown())
             Slider::mouseDown (e);
     }

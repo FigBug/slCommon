@@ -3,6 +3,9 @@
 
 void slProgram::loadProcessor (slProcessor* p)
 {
+    for (auto* p : p->getPluginParameters())
+        p->setUserValueNotifingHost (p->getUserDefaultValue());
+    
     for (slParameter::ParamState state : states)
     {
         if (slParameter* pp = p->getParameter (state.uid))

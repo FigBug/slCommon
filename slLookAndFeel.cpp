@@ -72,7 +72,7 @@ void slLookAndFeel::drawRotarySlider (Graphics& g, int x, int y, int width, int 
 void slLookAndFeel::drawButtonBackground (Graphics& g, Button& b, const Colour&,
                                           bool, bool)
 {
-    g.setColour (b.findColour (TextButton::buttonOnColourId));
+    g.setColour (b.findColour (TextButton::buttonOnColourId).withMultipliedAlpha (b.isEnabled() ? 1.0 : 0.5));
     if (b.getToggleState())
         g.fillRect (b.getLocalBounds());
     else
@@ -83,7 +83,7 @@ void slLookAndFeel::drawButtonText (Graphics& g, TextButton& b, bool, bool)
 {
     g.setFont (getTextButtonFont (b, b.getHeight()));
     
-    g.setColour (b.findColour (b.getToggleState() ? TextButton::textColourOnId : TextButton::textColourOffId));
+    g.setColour (b.findColour (b.getToggleState() ? TextButton::textColourOnId : TextButton::textColourOffId).withMultipliedAlpha (b.isEnabled() ? 1.0 : 0.5));
     g.drawText (b.getButtonText(), b.getLocalBounds(), Justification::centred);
 }
 
@@ -97,7 +97,7 @@ void slLookAndFeel::drawComboBox (Graphics& g, int width, int height, bool isBut
     g.fillRect (boxBounds.toFloat());
     
     g.setColour (box.findColour (ComboBox::outlineColourId));
-    g.drawRect (boxBounds.toFloat().reduced (0.5f, 0.5f), 1.0f);
+    g.drawRect (boxBounds);
 }
 
 void slLookAndFeel::positionComboBoxText (ComboBox& box, Label& label)
