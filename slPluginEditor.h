@@ -41,6 +41,9 @@ protected:
     ComboBox programs;
     TextButton addButton {"A"};
     TextButton deleteButton {"D"};
+    TextButton helpButton {"H"};
+    
+    String additionalProgramming;
     
     void refreshPrograms();
 };

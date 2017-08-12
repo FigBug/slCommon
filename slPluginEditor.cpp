@@ -8,10 +8,12 @@ slAudioProcessorEditor::slAudioProcessorEditor (slProcessor& p, int cx_, int cy_
     addAndMakeVisible (&programs);
     addAndMakeVisible (&addButton);
     addAndMakeVisible (&deleteButton);
+    addAndMakeVisible (&helpButton);
 
     programs.addListener (this);
     addButton.addListener (this);
     deleteButton.addListener (this);
+    helpButton.addListener (this);
     
     refreshPrograms();
 }
@@ -28,8 +30,10 @@ void slAudioProcessorEditor::resized()
     const int tw = pw + ph + ph + 10;
     
     programs.setBounds (getWidth() / 2 - tw / 2, 30, pw, ph);
-    addButton.setBounds (programs.getRight() + 5, programs.getY(), programs.getHeight(), programs.getHeight());
-    deleteButton.setBounds (addButton.getRight() + 5, programs.getY(), programs.getHeight(), programs.getHeight());
+    addButton.setBounds (programs.getRight() + 5, programs.getY(), ph, ph);
+    deleteButton.setBounds (addButton.getRight() + 5, programs.getY(), ph, ph);
+    
+    helpButton.setBounds (getWidth() - ph - 5, 5, ph, ph);
 }
 
 Rectangle<int> slAudioProcessorEditor::getControlsArea()
@@ -100,6 +104,24 @@ void slAudioProcessorEditor::buttonClicked (Button* b)
             slProc.deleteProgram (programs.getSelectedItemIndex());
             refreshPrograms();
         }
+    }
+    else if (b == &helpButton)
+    {
+        String msg;
+        
+        msg += JucePlugin_Name " v" JucePlugin_VersionString "\n\n";
+        msg += "Programming:\nRoland Rabien\nDavid Rowland\nROLI JUCE Framework\n";
+        if (additionalProgramming.isNotEmpty())
+            msg += additionalProgramming;
+        msg += "\n\n";
+        msg += "Copyright ";
+        msg += String (__DATE__ + 7);
+        
+        AlertWindow w ("---- About ----", msg, AlertWindow::NoIcon, this);
+        w.addButton ("OK", 1);
+        w.setLookAndFeel (&lf);
+        
+        w.runModalLoop();
     }
 }
 
