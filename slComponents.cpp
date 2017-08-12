@@ -35,7 +35,7 @@ ParamComponent::ParamComponent (slParameter* parameter_)
     
 }
 //==============================================================================
-Knob::Knob (slParameter* parameter)
+Knob::Knob (slParameter* parameter, bool fromCentre)
   : ParamComponent (parameter),
     value (parameter),
     knob (parameter, Slider::RotaryHorizontalVerticalDrag, Slider::NoTextBox)
@@ -45,6 +45,8 @@ Knob::Knob (slParameter* parameter)
     addAndMakeVisible (knob);
  
     knob.setSkewFactor (parameter->getSkew());
+    if (fromCentre)
+        knob.getProperties().set ("fromCentre", true);
     
     name.setText (parameter->getShortName(), dontSendNotification);
     value.setJustificationType (Justification::centredTop);

@@ -19,8 +19,9 @@ slLookAndFeel::slLookAndFeel()
 }
 
 void slLookAndFeel::drawRotarySlider (Graphics& g, int x, int y, int width, int height, float sliderPos,
-                                      const float rotaryStartAngle, const float rotaryEndAngle, Slider& slider)
+                                      const float rotaryStartAngleIn, const float rotaryEndAngle, Slider& slider)
 {
+    float rotaryStartAngle = rotaryStartAngleIn;
     const float radius = jmin (width / 2, height / 2) - 2.0f;
     const float centreX = x + width * 0.5f;
     const float centreY = y + height * 0.5f;
@@ -38,12 +39,15 @@ void slLookAndFeel::drawRotarySlider (Graphics& g, int x, int y, int width, int 
         
         {
             Path filledArc;
-            filledArc.addPieSegment (rx, ry, rw, rw, angle, rotaryEndAngle, thickness);
+            filledArc.addPieSegment (rx, ry, rw, rw, rotaryStartAngle, rotaryEndAngle, thickness);
             g.fillPath (filledArc);
         }
         
         if (slider.isEnabled())
             g.setColour (slider.findColour (Slider::rotarySliderFillColourId).withAlpha (isMouseOver ? 0.95f : 0.9f));
+        
+        if (slider.getProperties().contains ("fromCentre"))
+            rotaryStartAngle = (rotaryStartAngle + rotaryEndAngle) / 2;
         
         {
             Path filledArc;

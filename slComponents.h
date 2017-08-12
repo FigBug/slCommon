@@ -172,7 +172,7 @@ private:
 class Knob : public ParamComponent
 {
 public:
-    Knob (slParameter* parameter);
+    Knob (slParameter* parameter, bool fromCentre = false);
     
 private:
     void resized() override;
