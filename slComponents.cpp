@@ -81,6 +81,14 @@ void Switch::resized()
     
     button.setBounds (r);
     name.setBounds (r.translated (0, -20));
+    
+    int y = name.getY();
+    if (y <= 0)
+    {
+        button.setTopLeftPosition (button.getX(), button.getY() + -y);
+        name.setTopLeftPosition (name.getX(), name.getY() + -y);
+    }
+
 }
 
 //==============================================================================
@@ -101,4 +109,11 @@ void Select::resized()
     
     comboBox.setBounds (r);
     name.setBounds (r.translated (0, -20));
+    
+    int y = name.getY();
+    if (y <= 0)
+    {
+        comboBox.setTopLeftPosition (comboBox.getX(), comboBox.getY() + -y);
+        name.setTopLeftPosition (name.getX(), name.getY() + -y);
+    }
 }
