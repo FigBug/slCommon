@@ -22,6 +22,20 @@ public:
 };
 
 //==============================================================================
+class NewsChecker : public Timer,
+                    public Thread
+{
+public:
+    NewsChecker (slAudioProcessorEditor& editor_);
+    ~NewsChecker();
+    
+    void timerCallback() override;
+    void run() override;
+    
+    slAudioProcessorEditor& editor;
+};
+
+//==============================================================================
 class slAudioProcessorEditor : public AudioProcessorEditor,
                                protected Button::Listener,
                                protected ComboBox::Listener
@@ -29,6 +43,7 @@ class slAudioProcessorEditor : public AudioProcessorEditor,
 public:
     slAudioProcessorEditor (slProcessor&, int cx = 100, int cy = 100) noexcept;
     void updateReady (String updateUrl);
+    void newsReady (String newsUrl);
 
     slProcessor& slProc;
     
@@ -50,6 +65,7 @@ protected:
     int inset = 4;
     
     ScopedPointer<UpdateChecker> updateChecker;
+    ScopedPointer<NewsChecker> newsChecker;
     
     OwnedArray<ParamComponent> controls;
 
@@ -62,12 +78,14 @@ protected:
     TextButton deleteButton {"D"};
     TextButton socaButton {"S"};
     TextButton helpButton {"H"};
+    TextButton newsButton {"N"};
     TextButton updateButton {"U"};
     
     SharedResourcePointer<TooltipWindow> tooltipWindow;
     
     String additionalProgramming;
     String updateUrl;
+    String newsUrl;
     
     void refreshPrograms();
 };

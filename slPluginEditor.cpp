@@ -15,7 +15,7 @@ UpdateChecker::UpdateChecker (slAudioProcessorEditor& editor_)
         }
         else if (time (NULL) > last + 86400)
         {
-            startTimer (2500);
+            startTimer (Random::getSystemRandom().nextInt ({1500, 2500}));
         }
     }
 }
@@ -64,6 +64,76 @@ void UpdateChecker::run()
 }
 
 //==============================================================================
+NewsChecker::NewsChecker (slAudioProcessorEditor& editor_)
+: Thread ("News"), editor (editor_)
+{
+    if (ScopedPointer<PropertiesFile> props = editor.slProc.getSettings())
+    {
+        String url = props->getValue ("newsUrl");
+        int last   = props->getIntValue ("lastNewsCheck");
+        
+        if (url.isNotEmpty())
+        {
+            editor.newsReady (url);
+        }
+        else if (time (NULL) > last + 86400)
+        {
+            startTimer (Random::getSystemRandom().nextInt ({1500, 2500}));
+        }
+    }
+}
+
+NewsChecker::~NewsChecker()
+{
+    while (isThreadRunning())
+        Thread::sleep (10);
+}
+
+void NewsChecker::timerCallback()
+{
+    stopTimer();
+    startThread();
+}
+
+void NewsChecker::run()
+{
+    XmlDocument doc (URL ("https://socalabs.com/feed/").readEntireTextStream());
+    if (auto* root = doc.getDocumentElement())
+    {
+        if (ScopedPointer<PropertiesFile> props = editor.slProc.getSettings())
+        {
+            if (auto* rss = root->getChildByName("channel"))
+            {
+                if (auto* item = rss->getChildByName ("item"))
+                {
+                    if (auto* link = item->getChildByName("link"))
+                    {
+                        props->setValue ("lastNewsCheck", int (time (NULL)));
+                        
+                        String url = link->getAllSubText();
+                        
+                        StringArray readNews = StringArray::fromTokens (props->getValue ("readNews"), "|", "");
+                        if (readNews.isEmpty())
+                        {
+                            readNews.add (url);
+                            props->setValue("readNews", readNews.joinIntoString ("|"));
+                        }
+
+                        if (! readNews.contains(url))
+                        {
+                            props->setValue ("newsUrl", url);
+                            
+                            const MessageManagerLock mmLock;
+                            editor.newsReady (url);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+//==============================================================================
 slAudioProcessorEditor::slAudioProcessorEditor (slProcessor& p, int cx_, int cy_) noexcept
   : AudioProcessorEditor (p), slProc (p), cx (cx_), cy (cy_)
 {
@@ -74,6 +144,7 @@ slAudioProcessorEditor::slAudioProcessorEditor (slProcessor& p, int cx_, int cy_
     addAndMakeVisible (&deleteButton);
     addAndMakeVisible (&helpButton);
     addAndMakeVisible (&socaButton);
+    addChildComponent (&newsButton);
     addChildComponent (&updateButton);
 
     programs.addListener (this);
@@ -81,18 +152,21 @@ slAudioProcessorEditor::slAudioProcessorEditor (slProcessor& p, int cx_, int cy_
     deleteButton.addListener (this);
     helpButton.addListener (this);
     socaButton.addListener (this);
+    newsButton.addListener (this);
     updateButton.addListener (this);
     
     programs.setTooltip ("Select Preset");
     addButton.setTooltip ("Add Preset");
     deleteButton.setTooltip ("Delete Preset");
     helpButton.setTooltip ("Help >> About");
+    newsButton.setTooltip ("News from SocaLabs");
     socaButton.setTooltip ("Visit www.socalabs.com");
     updateButton.setTooltip ("Update avaliable");
     
     refreshPrograms();
     
     updateChecker = new UpdateChecker (*this);
+    newsChecker = new NewsChecker (*this);
 }
 
 void slAudioProcessorEditor::paint (Graphics& g)
@@ -111,6 +185,7 @@ void slAudioProcessorEditor::resized()
     deleteButton.setBounds (addButton.getRight() + 5, programs.getY(), ph, ph);
     
     socaButton.setBounds (5, 5, ph, ph);
+    newsButton.setBounds (socaButton.getBounds().translated (ph + 5, 0));
     helpButton.setBounds (getWidth() - ph - 5, 5, ph, ph);
     updateButton.setBounds (helpButton.getBounds().translated (- ph - 5, 0));
 }
@@ -214,6 +289,20 @@ void slAudioProcessorEditor::buttonClicked (Button* b)
     {
         URL ("http://socalabs.com").launchInDefaultBrowser();
     }
+    else if (b == &newsButton)
+    {
+        URL (newsUrl).launchInDefaultBrowser();
+        newsButton.setVisible (false);
+        
+        if (ScopedPointer<PropertiesFile> props = slProc.getSettings())
+        {
+            props->setValue ("newsUrl", "");
+            
+            StringArray readNews = StringArray::fromTokens (props->getValue ("readNews"), "|", "");
+            readNews.add (newsUrl);
+            props->setValue("readNews", readNews.joinIntoString ("|"));
+        }
+    }
 }
 
 void slAudioProcessorEditor::comboBoxChanged (ComboBox* c)
@@ -227,4 +316,10 @@ void slAudioProcessorEditor::updateReady (String updateUrl_)
 {
     updateUrl = updateUrl_;
     updateButton.setVisible (true);
+}
+
+void slAudioProcessorEditor::newsReady (String newsUrl_)
+{
+    newsUrl = newsUrl_;
+    newsButton.setVisible (true);
 }
