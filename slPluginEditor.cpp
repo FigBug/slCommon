@@ -1,5 +1,69 @@
 #include "slPluginEditor.h"
 
+//==============================================================================
+UpdateChecker::UpdateChecker (slAudioProcessorEditor& editor_)
+  : Thread ("Update"), editor (editor_)
+{
+    if (ScopedPointer<PropertiesFile> props = editor.slProc.getSettings())
+    {
+        String url = props->getValue (JucePlugin_Name "_updateUrl");
+        int last   = props->getIntValue (JucePlugin_Name "_lastUpdateCheck");
+        
+        if (url.isNotEmpty())
+        {
+            editor.updateReady (url);
+        }
+        else if (time (NULL) > last + 86400)
+        {
+            startTimer (2500);
+        }
+    }
+}
+
+UpdateChecker::~UpdateChecker()
+{
+    while (isThreadRunning())
+        Thread::sleep (10);
+}
+
+void UpdateChecker::timerCallback()
+{
+    stopTimer();
+    startThread();
+}
+
+void UpdateChecker::run()
+{
+    XmlDocument doc (URL ("https://socalabs.com/version.xml").readEntireTextStream());
+    if (auto* root = doc.getDocumentElement())
+    {
+        if (ScopedPointer<PropertiesFile> props = editor.slProc.getSettings())
+        {
+            props->setValue (JucePlugin_Name "_lastUpdateCheck", int (time (NULL)));
+
+            auto* child = root->getChildElement (0);
+            while (child)
+            {
+                String name = child->getStringAttribute ("name");
+                String ver  = child->getStringAttribute ("num");
+                String url  = child->getStringAttribute ("url");
+                
+                if (name == JucePlugin_Name && versionStringToInt (ver) > versionStringToInt (JucePlugin_VersionString))
+                {
+                    props->setValue (JucePlugin_Name "_updateUrl", url);
+
+                    const MessageManagerLock mmLock;
+                    editor.updateReady (url);
+                    break;
+                }
+                
+                child = child->getNextElement();
+            }
+        }
+    }
+}
+
+//==============================================================================
 slAudioProcessorEditor::slAudioProcessorEditor (slProcessor& p, int cx_, int cy_) noexcept
   : AudioProcessorEditor (p), slProc (p), cx (cx_), cy (cy_)
 {
@@ -9,13 +73,26 @@ slAudioProcessorEditor::slAudioProcessorEditor (slProcessor& p, int cx_, int cy_
     addAndMakeVisible (&addButton);
     addAndMakeVisible (&deleteButton);
     addAndMakeVisible (&helpButton);
+    addAndMakeVisible (&socaButton);
+    addChildComponent (&updateButton);
 
     programs.addListener (this);
     addButton.addListener (this);
     deleteButton.addListener (this);
     helpButton.addListener (this);
+    socaButton.addListener (this);
+    updateButton.addListener (this);
+    
+    programs.setTooltip ("Select Preset");
+    addButton.setTooltip ("Add Preset");
+    deleteButton.setTooltip ("Delete Preset");
+    helpButton.setTooltip ("Help >> About");
+    socaButton.setTooltip ("Visit www.socalabs.com");
+    updateButton.setTooltip ("Update avaliable");
     
     refreshPrograms();
+    
+    updateChecker = new UpdateChecker (*this);
 }
 
 void slAudioProcessorEditor::paint (Graphics& g)
@@ -33,7 +110,9 @@ void slAudioProcessorEditor::resized()
     addButton.setBounds (programs.getRight() + 5, programs.getY(), ph, ph);
     deleteButton.setBounds (addButton.getRight() + 5, programs.getY(), ph, ph);
     
+    socaButton.setBounds (5, 5, ph, ph);
     helpButton.setBounds (getWidth() - ph - 5, 5, ph, ph);
+    updateButton.setBounds (helpButton.getBounds().translated (- ph - 5, 0));
 }
 
 Rectangle<int> slAudioProcessorEditor::getControlsArea()
@@ -123,6 +202,18 @@ void slAudioProcessorEditor::buttonClicked (Button* b)
         
         w.runModalLoop();
     }
+    else if (b == &updateButton)
+    {
+        URL (updateUrl).launchInDefaultBrowser();
+        updateButton.setVisible (false);
+        
+        if (ScopedPointer<PropertiesFile> props = slProc.getSettings())
+            props->setValue (JucePlugin_Name "_updateUrl", "");
+    }
+    else if (b == &socaButton)
+    {
+        URL ("http://socalabs.com").launchInDefaultBrowser();
+    }
 }
 
 void slAudioProcessorEditor::comboBoxChanged (ComboBox* c)
@@ -130,4 +221,10 @@ void slAudioProcessorEditor::comboBoxChanged (ComboBox* c)
     int idx = programs.getSelectedItemIndex();
     deleteButton.setEnabled (idx != 0);
     processor.setCurrentProgram (idx);
+}
+
+void slAudioProcessorEditor::updateReady (String updateUrl_)
+{
+    updateUrl = updateUrl_;
+    updateButton.setVisible (true);
 }

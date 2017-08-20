@@ -42,3 +42,17 @@ float LevelTracker::getLevel()
     return peakLevel - (decayRate * (elapsed - hold));
 }
 
+int versionStringToInt (const String& versionString)
+{
+    StringArray parts;
+    parts.addTokens (versionString, ".", "");
+    parts.trim();
+    parts.removeEmptyStrings();
+    
+    int res = 0;
+    
+    for (auto part : parts)
+        res = (res << 8) + part.getIntValue();
+    
+    return res;
+}

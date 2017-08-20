@@ -16,6 +16,8 @@ public:
     //==============================================================================
     slProcessor();
     ~slProcessor();
+    
+    PropertiesFile* getSettings();
         
     //==============================================================================
     void addPluginParameter (slParameter* parameter);

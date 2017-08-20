@@ -29,6 +29,20 @@ slProcessor::~slProcessor()
     LookAndFeel::setDefaultLookAndFeel (nullptr);
 }
 
+PropertiesFile* slProcessor::getSettings()
+{
+#if JUCE_MAC
+    File dir = File::getSpecialLocation (File::userApplicationDataDirectory).getChildFile ("Preferences").getChildFile ("SocaLabs");
+#else
+    File dir = File::getSpecialLocation (File::userApplicationDataDirectory).getChildFile ("SocaLabs");
+#endif
+    dir.createDirectory();
+    
+    PropertiesFile::Options options;
+    
+    return new PropertiesFile (dir.getChildFile ("plugin_settings.xml"), options);
+}
+
 //==============================================================================
 void slProcessor::addPluginParameter (slParameter* parameter)
 {

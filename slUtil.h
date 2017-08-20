@@ -109,3 +109,5 @@ inline bool updateIfDifferent (Type& valueToUpdate, const Type& newValue) noexce
     valueToUpdate = newValue;
     return true;
 }
+
+int versionStringToInt (const String& versionString);
