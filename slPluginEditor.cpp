@@ -35,7 +35,7 @@ void UpdateChecker::timerCallback()
 void UpdateChecker::run()
 {
     XmlDocument doc (URL ("https://socalabs.com/version.xml").readEntireTextStream());
-    if (auto* root = doc.getDocumentElement())
+    if (ScopedPointer<XmlElement> root = doc.getDocumentElement())
     {
         if (ScopedPointer<PropertiesFile> props = editor.slProc.getSettings())
         {
@@ -98,7 +98,7 @@ void NewsChecker::timerCallback()
 void NewsChecker::run()
 {
     XmlDocument doc (URL ("https://socalabs.com/feed/").readEntireTextStream());
-    if (auto* root = doc.getDocumentElement())
+    if (ScopedPointer<XmlElement> root = doc.getDocumentElement())
     {
         if (ScopedPointer<PropertiesFile> props = editor.slProc.getSettings())
         {
