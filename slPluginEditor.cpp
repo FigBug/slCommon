@@ -166,7 +166,7 @@ slAudioProcessorEditor::slAudioProcessorEditor (slProcessor& p, int cx_, int cy_
     refreshPrograms();
     
     updateChecker = new UpdateChecker (*this);
-    newsChecker = new NewsChecker (*this);
+    //newsChecker = new NewsChecker (*this);
 }
 
 void slAudioProcessorEditor::paint (Graphics& g)
@@ -287,7 +287,7 @@ void slAudioProcessorEditor::buttonClicked (Button* b)
     }
     else if (b == &socaButton)
     {
-        URL ("http://socalabs.com").launchInDefaultBrowser();
+        URL ("http://tracktion.com").launchInDefaultBrowser();
     }
     else if (b == &newsButton)
     {

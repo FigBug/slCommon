@@ -76,7 +76,7 @@ protected:
     ComboBox programs;
     TextButton addButton {"A"};
     TextButton deleteButton {"D"};
-    TextButton socaButton {"S"};
+    TextButton socaButton {"T"};
     TextButton helpButton {"H"};
     TextButton newsButton {"N"};
     TextButton updateButton {"U"};
