@@ -1,4 +1,5 @@
 #include "slPluginEditor.h"
+#include <time.h>
 
 //==============================================================================
 UpdateChecker::UpdateChecker (slAudioProcessorEditor& editor_)
