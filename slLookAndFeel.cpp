@@ -15,7 +15,11 @@ slLookAndFeel::slLookAndFeel()
     setColour (ComboBox::backgroundColourId, Colours::transparentWhite);
     setColour (ComboBox::outlineColourId, Colours::white);
     
+#if JUCE_LINUX
+    Desktop::getInstance().getDefaultLookAndFeel().setDefaultSansSerifTypefaceName ("Verdana");
+#else
     Desktop::getInstance().getDefaultLookAndFeel().setDefaultSansSerifTypefaceName ("Geneva");
+#endif
 }
 
 void slLookAndFeel::drawRotarySlider (Graphics& g, int x, int y, int width, int height, float sliderPos,
