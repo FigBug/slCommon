@@ -3,8 +3,8 @@
 
 void slProgram::loadProcessor (slProcessor* p)
 {
-    for (auto* p : p->getPluginParameters())
-        p->setUserValueNotifingHost (p->getUserDefaultValue());
+    for (auto* pp : p->getPluginParameters())
+        pp->setUserValueNotifingHost (pp->getUserDefaultValue());
     
     for (slParameter::ParamState state : states)
     {
