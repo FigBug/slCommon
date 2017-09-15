@@ -80,7 +80,7 @@ void slLookAndFeel::drawRotarySlider (Graphics& g, int x, int y, int width, int 
 void slLookAndFeel::drawButtonBackground (Graphics& g, Button& b, const Colour&,
                                           bool, bool)
 {
-    g.setColour (b.findColour (TextButton::buttonOnColourId).withMultipliedAlpha (b.isEnabled() ? 1.0 : 0.5));
+    g.setColour (b.findColour (TextButton::buttonOnColourId).withMultipliedAlpha (b.isEnabled() ? 1.0f : 0.5f));
     if (b.getToggleState())
         g.fillRect (b.getLocalBounds());
     else

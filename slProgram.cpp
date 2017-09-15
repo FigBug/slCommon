@@ -9,7 +9,7 @@ void slProgram::loadProcessor (slProcessor* p)
     for (slParameter::ParamState state : states)
     {
         if (slParameter* pp = p->getParameter (state.uid))
-            if (!pp->isMetaParameter())
+            if (! pp->isMetaParameter())
                 pp->setUserValueNotifingHost (state.value);
     }
 }
@@ -32,13 +32,13 @@ void slProgram::loadFromFile (File f)
     {
         states.clear();
         
-        name = rootE->getStringAttribute("name");
+        name = rootE->getStringAttribute ("name");
         
-        XmlElement* paramE = rootE->getChildByName("param");
+        XmlElement* paramE = rootE->getChildByName ("param");
         while (paramE)
         {
-            String uid = paramE->getStringAttribute("uid");
-            float  val = (float) paramE->getDoubleAttribute("val");
+            String uid = paramE->getStringAttribute ("uid");
+            float  val = (float) paramE->getDoubleAttribute ("val");
 
             slParameter::ParamState state;
             state.uid   = uid;
@@ -60,14 +60,14 @@ void slProgram::saveToDir (File f)
     {
         XmlElement* paramE = new XmlElement ("param");
         
-        paramE->setAttribute("uid", state.uid);
-        paramE->setAttribute("val", state.value);
+        paramE->setAttribute ("uid", state.uid);
+        paramE->setAttribute ("val", state.value);
         
         rootE->addChildElement (paramE);
     }
     
-    File xmlFile = f.getChildFile(File::createLegalFileName(name) + ".xml");
-    rootE->writeToFile(xmlFile, String::empty);
+    File xmlFile = f.getChildFile (File::createLegalFileName (name) + ".xml");
+    rootE->writeToFile (xmlFile, String::empty);
 }
 
 void slProgram::deleteFromDir (File f)

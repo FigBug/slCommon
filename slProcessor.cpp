@@ -182,6 +182,10 @@ void slProcessor::loadAllPrograms()
 
 void slProcessor::saveProgram (String name)
 {
+    for (int i = programs.size(); --i >= 0;)
+        if (programs[i]->name == name)
+            deleteProgram (i);
+
     slProgram* newProgram = new slProgram();
     newProgram->name = name;
     newProgram->saveProcessor (this);
