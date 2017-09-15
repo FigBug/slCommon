@@ -264,7 +264,7 @@ void slAudioProcessorEditor::buttonClicked (Button* b)
     {
         String msg;
         
-        msg += JucePlugin_Name " v" JucePlugin_VersionString "\n\n";
+        msg += JucePlugin_Name " v" JucePlugin_VersionString " (" __DATE__ ")\n\n";
         msg += "Programming:\nRoland Rabien\nDavid Rowland\nROLI JUCE Framework\n";
         if (additionalProgramming.isNotEmpty())
             msg += additionalProgramming;
@@ -308,9 +308,12 @@ void slAudioProcessorEditor::buttonClicked (Button* b)
 
 void slAudioProcessorEditor::comboBoxChanged (ComboBox* c)
 {
-    int idx = programs.getSelectedItemIndex();
-    deleteButton.setEnabled (idx != 0);
-    processor.setCurrentProgram (idx);
+    if (c == &programs)
+    {
+        int idx = programs.getSelectedItemIndex();
+        deleteButton.setEnabled (idx != 0);
+        processor.setCurrentProgram (idx);
+    }
 }
 
 void slAudioProcessorEditor::updateReady (String updateUrl_)

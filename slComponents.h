@@ -49,9 +49,9 @@ public:
       : parameter (parameter_)
     {
         for (int i = 0; i <= parameter->getUserRangeEnd(); i++)
-            addItem (parameter->userValueToText (i), i + 1);
+            addItem (parameter->userValueToText (float (i)), i + 1);
         
-        setSelectedItemIndex (parameter->getUserValue(), dontSendNotification);
+        setSelectedItemIndex (int (parameter->getUserValue()), dontSendNotification);
         
         parameter->addListener (this);
         addListener (this);
@@ -64,13 +64,13 @@ public:
     
     void parameterChanged (slParameter*) override
     {
-        setSelectedItemIndex (parameter->getUserValue(), dontSendNotification);
+        setSelectedItemIndex (int (parameter->getUserValue()), dontSendNotification);
     }
     
     void comboBoxChanged (ComboBox*) override
     {
         parameter->beginUserAction();
-        parameter->setUserValueNotifingHost (getSelectedItemIndex());
+        parameter->setUserValueNotifingHost (float (getSelectedItemIndex()));
         parameter->endUserAction();
     }
     
