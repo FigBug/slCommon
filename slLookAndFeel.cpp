@@ -17,6 +17,8 @@ slLookAndFeel::slLookAndFeel()
     
 #if JUCE_LINUX
     Desktop::getInstance().getDefaultLookAndFeel().setDefaultSansSerifTypefaceName ("Verdana");
+#elif JUCE_WINDOWS
+    Desktop::getInstance().getDefaultLookAndFeel().setDefaultSansSerifTypefaceName ("Tahoma");
 #else
     Desktop::getInstance().getDefaultLookAndFeel().setDefaultSansSerifTypefaceName ("Geneva");
 #endif
