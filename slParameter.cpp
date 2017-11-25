@@ -21,7 +21,7 @@ slParameter::slParameter (String uid_, String name_, String shortName_, String l
 
 bool slParameter::isOnOff()
 {
-    return range.end == range.interval;
+    return range.start == 0 && range.end == range.interval;
 }
 
 float slParameter::getUserValue() const
