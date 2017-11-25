@@ -42,6 +42,8 @@ class slAudioProcessorEditor : public AudioProcessorEditor,
 {
 public:
     slAudioProcessorEditor (slProcessor&, int cx = 100, int cy = 100) noexcept;
+    ~slAudioProcessorEditor();
+    
     void updateReady (String updateUrl);
     void newsReady (String newsUrl);
 

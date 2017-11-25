@@ -170,6 +170,11 @@ slAudioProcessorEditor::slAudioProcessorEditor (slProcessor& p, int cx_, int cy_
     newsChecker = new NewsChecker (*this);
 }
 
+slAudioProcessorEditor::~slAudioProcessorEditor()
+{
+    setLookAndFeel (nullptr);
+}
+
 void slAudioProcessorEditor::paint (Graphics& g)
 {
     g.fillAll (Colours::black);
