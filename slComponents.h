@@ -48,10 +48,10 @@ public:
     PluginComboBox (slParameter* parameter_)
       : parameter (parameter_)
     {
-        for (int i = 0; i <= parameter->getUserRangeEnd(); i++)
-            addItem (parameter->userValueToText (float (i)), i + 1);
+        for (int i = 0; i <= parameter->getUserRangeEnd() - parameter->getUserRangeStart(); i++)
+            addItem (parameter->userValueToText (float (i + parameter->getUserRangeStart())), i + 1);
         
-        setSelectedItemIndex (int (parameter->getUserValue()), dontSendNotification);
+        setSelectedItemIndex (int (parameter->getUserValue() - parameter->getUserRangeStart()), dontSendNotification);
         
         parameter->addListener (this);
         addListener (this);
@@ -64,13 +64,13 @@ public:
     
     void parameterChanged (slParameter*) override
     {
-        setSelectedItemIndex (int (parameter->getUserValue()), dontSendNotification);
+        setSelectedItemIndex (int (parameter->getUserValue() - parameter->getUserRangeStart()), dontSendNotification);
     }
     
     void comboBoxChanged (ComboBox*) override
     {
         parameter->beginUserAction();
-        parameter->setUserValueNotifingHost (float (getSelectedItemIndex()));
+        parameter->setUserValueNotifingHost (float (getSelectedItemIndex() + parameter->getUserRangeStart()));
         parameter->endUserAction();
     }
     

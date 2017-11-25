@@ -29,6 +29,11 @@ float slParameter::getUserValue() const
     return jlimit (range.start, range.end, value);
 }
 
+int slParameter::getUserValueInt() const
+{
+    return int (jlimit (range.start, range.end, value));
+}
+
 float slParameter::getUserDefaultValue() const
 {
     return defaultValue;
