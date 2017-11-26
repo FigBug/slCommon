@@ -136,7 +136,7 @@ void NewsChecker::run()
 
 //==============================================================================
 slAudioProcessorEditor::slAudioProcessorEditor (slProcessor& p, int cx_, int cy_) noexcept
-  : AudioProcessorEditor (p), slProc (p), cx (cx_), cy (cy_)
+  : slAudioProcessorEditorBase (p), slProc (p), cx (cx_), cy (cy_)
 {
     setLookAndFeel (&lf);
     
@@ -182,6 +182,8 @@ void slAudioProcessorEditor::paint (Graphics& g)
 
 void slAudioProcessorEditor::resized()
 {
+    slAudioProcessorEditorBase::resized();
+    
     const int pw = 100;
     const int ph = 20;
     const int tw = pw + ph + ph + 10;

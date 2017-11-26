@@ -36,7 +36,48 @@ public:
 };
 
 //==============================================================================
-class slAudioProcessorEditor : public AudioProcessorEditor,
+class slAudioProcessorEditorBase : public AudioProcessorEditor
+{
+public:
+    slAudioProcessorEditorBase (slProcessor& p) : AudioProcessorEditor (p), proc (p)
+    {
+    }
+    
+    void makeResizable (int minX, int minY, int maxX, int maxY)
+    {
+        addAndMakeVisible (resizer = new ResizableCornerComponent (this, &resizeLimits));
+        resizeLimits.setSizeLimits (minX, minY, maxX, maxY);
+        
+        ValueTree state (proc.state);
+        
+        if (state.hasProperty ("width") && state.hasProperty ("height"))
+            setSize (state["width"], state["height"]);
+        
+        resized();
+    }
+    
+    void resized() override
+    {
+        const Rectangle<int> r (getLocalBounds());
+        
+        if (resizer != nullptr)
+        {
+            resizer->setBounds (Rectangle<int> (r).removeFromRight (15).removeFromBottom (15));
+            
+            proc.state.setProperty ("width", getWidth(), nullptr);
+            proc.state.setProperty ("height", getHeight(), nullptr);
+        }
+    }
+
+    ComponentBoundsConstrainer resizeLimits;
+    
+private:
+    slProcessor& proc;
+    ScopedPointer<ResizableCornerComponent> resizer;
+};
+
+//==============================================================================
+class slAudioProcessorEditor : public slAudioProcessorEditorBase,
                                protected Button::Listener,
                                protected ComboBox::Listener
 {
@@ -50,14 +91,14 @@ public:
     slProcessor& slProc;
     
 protected:
-    Rectangle<int> getControlsArea();
+    virtual Rectangle<int> getControlsArea();
     
     void paint (Graphics& g) override;
     void resized() override;
     void buttonClicked (Button* b) override;
     void comboBoxChanged (ComboBox* c) override;
     
-    Rectangle<int> getGridArea (int x, int y, int w = 1, int h = 1);
+    virtual Rectangle<int> getGridArea (int x, int y, int w = 1, int h = 1);
     void setGridSize (int x, int y);
     
     const int cx;

@@ -61,6 +61,8 @@ public:
     
     std::map<String, slParameter*> parameterMap;
     
+    ValueTree state;
+    
 private:
     void updateParams();
     
@@ -68,8 +70,6 @@ private:
     
     int currentProgram {0};
     OwnedArray<slProgram> programs;
-    
-    ValueTree state;
     
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (slProcessor)
