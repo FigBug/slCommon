@@ -93,12 +93,12 @@ void slLookAndFeel::drawButtonText (Graphics& g, TextButton& b, bool, bool)
 {
     g.setFont (getTextButtonFont (b, b.getHeight()));
     
-    g.setColour (b.findColour (b.getToggleState() ? TextButton::textColourOnId : TextButton::textColourOffId).withMultipliedAlpha (b.isEnabled() ? 1.0 : 0.5));
+    g.setColour (b.findColour (b.getToggleState() ? TextButton::textColourOnId : TextButton::textColourOffId).withMultipliedAlpha (b.isEnabled() ? 1.0f : 0.5f));
     g.drawText (b.getButtonText(), b.getLocalBounds(), Justification::centred);
 }
 
-void slLookAndFeel::drawComboBox (Graphics& g, int width, int height, bool isButtonDown,
-                                  int buttonX, int buttonY, int buttonW, int buttonH,
+void slLookAndFeel::drawComboBox (Graphics& g, int width, int height, bool /*isButtonDown*/,
+                                  int /*buttonX*/, int /*buttonY*/, int /*buttonW*/, int /*buttonH*/,
                                   ComboBox& box)
 {
     const Rectangle<int> boxBounds (0, 0, width, height);
