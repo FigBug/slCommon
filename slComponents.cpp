@@ -16,6 +16,12 @@ Readout::Readout (slParameter* parameter_)
 {
     parameter->addListener (this);
     setText (parameter->getUserValueText(), dontSendNotification);
+    
+    addChildComponent (editor);
+    editor.addListener (this);
+    editor.setOpaque (false);
+    
+    setBorderSize (BorderSize<int> (0));
 }
 
 Readout::~Readout()
@@ -26,6 +32,56 @@ Readout::~Readout()
 void Readout::parameterChanged (slParameter*)
 {
     setText (parameter->getUserValueText(), dontSendNotification);
+}
+
+void Readout::paint (Graphics& g)
+{
+    if (! editing)
+        Label::paint (g);
+}
+
+void Readout::resized()
+{
+    editor.setBounds (getLocalBounds());
+}
+
+void Readout::mouseDown (const MouseEvent& e)
+{
+    editing = true;
+    editor.setVisible (true);
+    editor.setFont (getFont());
+    editor.setText (parameter->getUserValueText(), dontSendNotification);
+    editor.setJustificationType (getJustificationType());
+    editor.setSelectAllWhenFocused (true);
+    editor.toFront (true);
+    repaint();
+}
+
+void Readout::textEditorReturnKeyPressed (SingleLineTextEditor&)
+{
+    float v = editor.getText().getFloatValue();
+    parameter->setUserValueAsUserAction (v);
+    
+    editor.setVisible (false);
+    editing = false;
+    repaint();
+}
+
+void Readout::textEditorEscapeKeyPressed (SingleLineTextEditor&)
+{
+    editor.setVisible (false);
+    editing = false;
+    repaint();
+}
+
+void Readout::textEditorFocusLost (SingleLineTextEditor&)
+{
+    float v = editor.getText().getFloatValue();
+    parameter->setUserValueAsUserAction (v);
+    
+    editor.setVisible (false);
+    editing = false;
+    repaint();
 }
 
 //==============================================================================

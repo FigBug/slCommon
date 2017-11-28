@@ -3,6 +3,7 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 
 #include "slParameter.h"
+#include "SingleLineTextEditor.h"
 
 //==============================================================================
 class PluginButton : public TextButton,
@@ -144,7 +145,8 @@ private:
 
 //==============================================================================
 class Readout : public Label,
-                private slParameter::Listener
+                private slParameter::Listener,
+                private SingleLineTextEditor::Listener
 {
 public:
     Readout (slParameter* parameter);
@@ -152,8 +154,18 @@ public:
     
 private:
     void parameterChanged (slParameter* source) override;
+    void resized() override;
+    void mouseDown (const MouseEvent& e) override;
+    void paint (Graphics& g) override;
+    
+    void textEditorReturnKeyPressed (SingleLineTextEditor&) override;
+    void textEditorEscapeKeyPressed (SingleLineTextEditor&) override;
+    void textEditorFocusLost (SingleLineTextEditor&) override;
     
     slParameter* parameter;
+    SingleLineTextEditor editor;
+    
+    bool editing = false;
 };
 
 //==============================================================================
