@@ -45,7 +45,7 @@ void Readout::resized()
     editor.setBounds (getLocalBounds());
 }
 
-void Readout::mouseDown (const MouseEvent& e)
+void Readout::mouseDown (const MouseEvent&)
 {
     editing = true;
     editor.setVisible (true);

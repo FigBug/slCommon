@@ -549,7 +549,7 @@ public:
 
         Graphics::ScopedSaveState state (g);
         g.reduceClipRegion (Rectangle<int> (startX, baselineY, endX - startX, 1));
-        g.fillCheckerBoard (Rectangle<int> (endX, baselineY + 1), 3, 1, colour, Colours::transparentBlack);
+        g.fillCheckerBoard (Rectangle<int> (endX, baselineY + 1).toFloat(), 3, 1, colour, Colours::transparentBlack);
     }
 
     void drawSelectedText (Graphics& g,
@@ -792,7 +792,7 @@ private:
 //==============================================================================
 class SingleLineTextEditor::TextHolderComponent  : public Component,
                                                    public Timer,
-                                                   public ValueListener
+                                                   public Value::Listener
 {
 public:
     TextHolderComponent (SingleLineTextEditor& ed)  : owner (ed)
